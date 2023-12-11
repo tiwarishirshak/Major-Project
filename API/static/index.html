@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vehicle Detection</title>
+</head>
+<body>
+    <h1>Vehicle Detection</h1>
+    <input type="file" id="fileInput" accept="image/*">
+    <button onclick="detectObjects()">Detect Objects</button>
+    <br>
+    <div id="detectionResults"></div>
+    <img id="outputImage" src="/static/output_image/output.jpg" alt="Output Image">
+
+    <script>
+        function detectObjects() {
+            var fileInput = document.getElementById('fileInput');
+            var inputImage = document.getElementById('inputImage');
+            var detectionResults = document.getElementById('detectionResults');
+            var outputImage = document.getElementById('outputImage');
+
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+
+            fetch('http://localhost:8000/detect', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                inputImage.src = URL.createObjectURL(file);
+                detectionResults.innerHTML = '';
+                data.forEach(result => {
+                    var listItem = document.createElement('div');
+                    listItem.textContent = result.class + ' - ' + result.confidence;
+                    detectionResults.appendChild(listItem);
+                });
+
+                // Update the output image source
+                outputImage.src = "/static/output_image/output.jpg";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
