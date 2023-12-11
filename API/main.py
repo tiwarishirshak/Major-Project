@@ -9,7 +9,7 @@ import cv2
 import os
 
 app = FastAPI()
-model = YOLO('yolov8l.yaml')
+model = YOLO('../best.pt', task='detect')
 
 
 
